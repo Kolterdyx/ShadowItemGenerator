@@ -1,0 +1,4 @@
+name: ShadowItemGenerator
+version: '${project.version}'
+main: me.kolterdyx.shadowitemgenerator.Main
+api-version: 1.17
