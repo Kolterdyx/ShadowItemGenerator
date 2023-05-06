@@ -6,7 +6,6 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("Shadow Items enabled");
 
         getServer().getPluginManager().registerEvents(new ShadowItemGenerator(), this);
 
