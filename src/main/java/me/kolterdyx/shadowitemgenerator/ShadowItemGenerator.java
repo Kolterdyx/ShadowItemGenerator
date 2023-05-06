@@ -7,8 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.Nameable;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +26,7 @@ public class ShadowItemGenerator implements Listener {
     private final ItemStack fillerItem;
     private final ItemStack generateButton;
 
-    public ShadowItemGenerator(){
+    public ShadowItemGenerator() {
         inventory = Bukkit.createInventory(null, 9, "Shadow Item Generator");
         fillerItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
         ItemMeta meta = fillerItem.getItemMeta();
@@ -40,8 +40,8 @@ public class ShadowItemGenerator implements Listener {
         initItems();
     }
 
-    private void initItems(){
-        for(int i=1;i<6;i++){
+    private void initItems() {
+        for (int i = 1; i < 6; i++) {
             inventory.setItem(i, fillerItem);
         }
         inventory.setItem(3, generateButton);
@@ -49,7 +49,7 @@ public class ShadowItemGenerator implements Listener {
         inventory.setItem(8, null);
     }
 
-    private void openInventory(final HumanEntity player){
+    private void openInventory(final HumanEntity player) {
         player.openInventory(inventory);
     }
 
@@ -57,10 +57,10 @@ public class ShadowItemGenerator implements Listener {
         ItemStack shadowItem = inventory.getItem(0);
         net.minecraft.world.item.ItemStack nmsitem = CraftItemStack.asNMSCopy(shadowItem);
         IInventory inv = ((CraftInventory) inventory).getInventory();
-        inv.setItem(8, nmsitem);
-        inv.setItem(7, nmsitem);
-        inv.setItem(6, nmsitem);
-        inv.setItem(0, nmsitem);
+        inv.a(8, nmsitem);
+        inv.a(7, nmsitem);
+        inv.a(6, nmsitem);
+        inv.a(0, nmsitem);
     }
 
     @EventHandler
@@ -70,15 +70,14 @@ public class ShadowItemGenerator implements Listener {
 
         final ItemStack clickedItem = e.getCurrentItem();
         if (clickedItem == null) return;
-        if (clickedItem.equals(fillerItem)){
+        if (clickedItem.equals(fillerItem)) {
             e.setCancelled(true);
             return;
         }
-        if (clickedItem.equals(generateButton)){
+        if (clickedItem.equals(generateButton)) {
             e.setCancelled(true);
             generateShadowItem();
         }
-
     }
 
 
@@ -89,7 +88,7 @@ public class ShadowItemGenerator implements Listener {
             Block block = event.getClickedBlock();
             if (block.getType() == Material.DROPPER) {
                 Nameable dropper = (Nameable) block.getState();
-                if (dropper.getCustomName() != null && dropper.getCustomName().equalsIgnoreCase("shadow")){
+                if (dropper.getCustomName() != null && dropper.getCustomName().equalsIgnoreCase("shadow")) {
                     Inventory dropper_inv = ((Container) dropper).getInventory();
                     for (ItemStack item :
                             dropper_inv.getContents()) {
@@ -99,11 +98,8 @@ public class ShadowItemGenerator implements Listener {
                             openInventory(event.getPlayer());
                         }
                     }
-
                 }
             }
         }
-
-
     }
 }
