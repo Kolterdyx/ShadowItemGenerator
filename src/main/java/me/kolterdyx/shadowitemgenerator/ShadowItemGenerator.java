@@ -1,10 +1,7 @@
 package me.kolterdyx.shadowitemgenerator;
 
 import net.minecraft.world.IInventory;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Nameable;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftInventory;
@@ -18,16 +15,17 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import java.util.HashMap;
 
 
 public class ShadowItemGenerator implements Listener {
 
-    private final Inventory inventory;
+    private final HashMap<HumanEntity, Inventory> inventories;
     private final ItemStack fillerItem;
     private final ItemStack generateButton;
 
     public ShadowItemGenerator() {
-        inventory = Bukkit.createInventory(null, 9, "Shadow Item Generator");
+        inventories = new HashMap();
         fillerItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
         ItemMeta meta = fillerItem.getItemMeta();
         meta.setDisplayName(" ");
@@ -40,7 +38,7 @@ public class ShadowItemGenerator implements Listener {
         initItems();
     }
 
-    private void initItems() {
+    private void initItems(Inventory inventory) {
         for (int i = 1; i < 6; i++) {
             inventory.setItem(i, fillerItem);
         }
@@ -49,11 +47,22 @@ public class ShadowItemGenerator implements Listener {
         inventory.setItem(8, null);
     }
 
+    private void createInventory(HumanEntity player) {
+        Inventory inv = Bukkit.createInventory(null, 9, "Shadow Item Generator");
+        initItems(inv);
+        inventories.put(player, inv);
+    }
+
     private void openInventory(final HumanEntity player) {
+        if (!inventories.containsKey(player)) {
+            createInventory(player);
+        }
+        Inventory inventory = inventories.get(player);
         player.openInventory(inventory);
     }
 
-    private void generateShadowItem() {
+    private void generateShadowItem(HumanEntity player) {
+        Inventory inventory = inventories.get(player);
         ItemStack shadowItem = inventory.getItem(0);
         net.minecraft.world.item.ItemStack nmsitem = CraftItemStack.asNMSCopy(shadowItem);
         IInventory inv = ((CraftInventory) inventory).getInventory();
@@ -65,8 +74,7 @@ public class ShadowItemGenerator implements Listener {
 
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
-        if (e.getInventory() != inventory) return;
-
+        if (!inventories.containsValue(e.getInventory())) return;
 
         final ItemStack clickedItem = e.getCurrentItem();
         if (clickedItem == null) return;
@@ -76,7 +84,7 @@ public class ShadowItemGenerator implements Listener {
         }
         if (clickedItem.equals(generateButton)) {
             e.setCancelled(true);
-            generateShadowItem();
+            generateShadowItem(e.getWhoClicked());
         }
     }
 
