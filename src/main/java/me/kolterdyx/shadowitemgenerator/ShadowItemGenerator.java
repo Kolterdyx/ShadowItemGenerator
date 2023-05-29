@@ -26,6 +26,10 @@ public class ShadowItemGenerator implements Listener {
     private final ItemStack fillerItem;
     private final ItemStack generateButton;
 
+    private final String dropperName;
+
+    private final String hopperName;
+
     public ShadowItemGenerator() {
         inventory = Bukkit.createInventory(null, 9, "Shadow Item Generator");
         fillerItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
@@ -37,7 +41,8 @@ public class ShadowItemGenerator implements Listener {
         meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Create Shadow Item");
         generateButton.setItemMeta(meta);
 
-        initItems();
+        dropperName = "shuyeah";
+        hopperName = "shuyeah";
     }
 
     private void initItems() {
@@ -88,12 +93,12 @@ public class ShadowItemGenerator implements Listener {
             Block block = event.getClickedBlock();
             if (block.getType() == Material.DROPPER) {
                 Nameable dropper = (Nameable) block.getState();
-                if (dropper.getCustomName() != null && dropper.getCustomName().equalsIgnoreCase("shadow")) {
+                if (dropper.getCustomName() != null && dropper.getCustomName().equalsIgnoreCase(dropperName)) {
                     Inventory dropper_inv = ((Container) dropper).getInventory();
                     for (ItemStack item :
                             dropper_inv.getContents()) {
                         if (item == null) continue;
-                        if (item.getItemMeta().getDisplayName().equalsIgnoreCase("shadow") && item.getType() == Material.HOPPER) {
+                        if (item.getItemMeta().getDisplayName().equalsIgnoreCase(hopperName) && item.getType() == Material.HOPPER) {
                             event.setCancelled(true);
                             openInventory(event.getPlayer());
                         }
